@@ -1,5 +1,6 @@
 package com.example.projectmanagerapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class User {
     @Column(nullable = false)
     private String username;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "users")
     private Set<Project> projects = new HashSet<>();
 }

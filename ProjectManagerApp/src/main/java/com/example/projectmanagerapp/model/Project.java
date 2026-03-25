@@ -1,5 +1,6 @@
 package com.example.projectmanagerapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class Project {
 
     private String description;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "project_users",

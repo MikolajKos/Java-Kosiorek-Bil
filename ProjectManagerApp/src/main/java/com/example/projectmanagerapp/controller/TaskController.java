@@ -3,6 +3,10 @@ package com.example.projectmanagerapp.controller;
 import com.example.projectmanagerapp.dto.CreateTaskRequest;
 import com.example.projectmanagerapp.model.Task;
 import com.example.projectmanagerapp.service.TaskService;
+import com.example.projectmanagerapp.model.User;
+import com.example.projectmanagerapp.repository.ProjectRepository;
+import com.example.projectmanagerapp.repository.TaskRepository;
+import com.example.projectmanagerapp.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,6 +44,9 @@ public class TaskController {
         Task savedTask = taskService.createTask(request);
 
         if (savedTask == null) {
+        Project project = projectRepository.findById(request.projectId()).orElse(null);
+        User user = userRepository.findById(request.userId()).orElse(null);
+        if (project == null || user == null) {
             return ResponseEntity.notFound().build();
         }
 

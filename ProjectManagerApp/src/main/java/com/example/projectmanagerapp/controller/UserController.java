@@ -3,6 +3,7 @@ package com.example.projectmanagerapp.controller;
 import com.example.projectmanagerapp.dto.CreateUserRequest;
 import com.example.projectmanagerapp.model.User;
 import com.example.projectmanagerapp.service.UserService;
+import com.example.projectmanagerapp.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

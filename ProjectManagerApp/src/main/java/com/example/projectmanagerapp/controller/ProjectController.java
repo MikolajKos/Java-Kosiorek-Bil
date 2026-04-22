@@ -2,6 +2,7 @@ package com.example.projectmanagerapp.controller;
 
 import com.example.projectmanagerapp.model.Project;
 import com.example.projectmanagerapp.service.ProjectService;
+import com.example.projectmanagerapp.repository.ProjectRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

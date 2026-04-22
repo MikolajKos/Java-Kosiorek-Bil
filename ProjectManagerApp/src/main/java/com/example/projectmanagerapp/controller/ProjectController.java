@@ -30,7 +30,10 @@ public class ProjectController {
     @PostMapping
     @Operation(summary = "Create a new project", description = "Adds a new project to the database")
     public Project createProject(
-            @Parameter(description = "Project object to be created")
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Project payload",
+                    required = true
+            )
             @RequestBody Project project) {
         return projectService.createProject(project);
     }
@@ -38,9 +41,12 @@ public class ProjectController {
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing project", description = "Updates an existing project by ID")
     public ResponseEntity<Project> updateProject(
-            @Parameter(description = "Project ID")
+            @Parameter(description = "Project ID", required = true, example = "1")
             @PathVariable Long id,
-            @Parameter(description = "Project fields to update")
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Project fields to update",
+                    required = true
+            )
             @RequestBody Project project) {
         Project updated = projectService.updateProject(id, project);
         if (updated == null) {
@@ -52,7 +58,7 @@ public class ProjectController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a project", description = "Deletes a project by ID")
     public ResponseEntity<Void> deleteProject(
-            @Parameter(description = "Project ID")
+            @Parameter(description = "Project ID", required = true, example = "1")
             @PathVariable Long id) {
         if (!projectService.deleteProject(id)) {
             return ResponseEntity.notFound().build();

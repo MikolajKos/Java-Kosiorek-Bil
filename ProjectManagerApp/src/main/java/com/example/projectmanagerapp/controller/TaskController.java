@@ -32,7 +32,10 @@ public class TaskController {
     @PostMapping
     @Operation(summary = "Create a new task", description = "Adds a new task and assigns it to a project and user")
     public ResponseEntity<Task> createTask(
-            @Parameter(description = "Data required to create a new task")
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Data required to create a new task",
+                    required = true
+            )
             @RequestBody CreateTaskRequest request) {
         Task savedTask = taskService.createTask(request);
         if (savedTask == null) {
@@ -44,9 +47,12 @@ public class TaskController {
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing task", description = "Updates an existing task by ID")
     public ResponseEntity<Task> updateTask(
-            @Parameter(description = "Task ID")
+            @Parameter(description = "Task ID", required = true, example = "1")
             @PathVariable Long id,
-            @Parameter(description = "Data required to update the task")
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Data required to update the task",
+                    required = true
+            )
             @RequestBody CreateTaskRequest request) {
         Task updated = taskService.updateTask(id, request);
         if (updated == null) {
@@ -58,7 +64,7 @@ public class TaskController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a task", description = "Deletes a task by ID")
     public ResponseEntity<Void> deleteTask(
-            @Parameter(description = "Task ID")
+            @Parameter(description = "Task ID", required = true, example = "1")
             @PathVariable Long id) {
         if (!taskService.deleteTask(id)) {
             return ResponseEntity.notFound().build();

@@ -32,7 +32,10 @@ public class UserController {
     @PostMapping
     @Operation(summary = "Create a new user", description = "Adds a new user to the database")
     public ResponseEntity<User> createUser(
-            @Parameter(description = "Data required to create a new user")
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Data required to create a new user",
+                    required = true
+            )
             @RequestBody CreateUserRequest request) {
         User user = new User();
         user.setUsername(request.username());
@@ -43,9 +46,12 @@ public class UserController {
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing user", description = "Updates an existing user by ID")
     public ResponseEntity<User> updateUser(
-            @Parameter(description = "User ID")
+            @Parameter(description = "User ID", required = true, example = "1")
             @PathVariable Long id,
-            @Parameter(description = "Data required to update the user")
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Data required to update the user",
+                    required = true
+            )
             @RequestBody CreateUserRequest request) {
         User updated = userService.updateUser(id, request);
         if (updated == null) {
@@ -57,7 +63,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a user", description = "Deletes a user by ID")
     public ResponseEntity<Void> deleteUser(
-            @Parameter(description = "User ID")
+            @Parameter(description = "User ID", required = true, example = "1")
             @PathVariable Long id) {
         if (!userService.deleteUser(id)) {
             return ResponseEntity.notFound().build();

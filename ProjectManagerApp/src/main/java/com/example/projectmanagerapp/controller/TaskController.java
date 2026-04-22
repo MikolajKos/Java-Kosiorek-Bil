@@ -3,10 +3,6 @@ package com.example.projectmanagerapp.controller;
 import com.example.projectmanagerapp.dto.CreateTaskRequest;
 import com.example.projectmanagerapp.model.Task;
 import com.example.projectmanagerapp.service.TaskService;
-import com.example.projectmanagerapp.model.User;
-import com.example.projectmanagerapp.repository.ProjectRepository;
-import com.example.projectmanagerapp.repository.TaskRepository;
-import com.example.projectmanagerapp.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +19,6 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    // Wstrzykujemy tylko jeden serwis, zamiast trzech repozytoriów!
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
@@ -39,17 +34,35 @@ public class TaskController {
     public ResponseEntity<Task> createTask(
             @Parameter(description = "Data required to create a new task")
             @RequestBody CreateTaskRequest request) {
-
-        // Cała logika tworzenia przeszła do serwisu
         Task savedTask = taskService.createTask(request);
-
         if (savedTask == null) {
-        Project project = projectRepository.findById(request.projectId()).orElse(null);
-        User user = userRepository.findById(request.userId()).orElse(null);
-        if (project == null || user == null) {
             return ResponseEntity.notFound().build();
         }
-
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTask);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update an existing task", description = "Updates an existing task by ID")
+    public ResponseEntity<Task> updateTask(
+            @Parameter(description = "Task ID")
+            @PathVariable Long id,
+            @Parameter(description = "Data required to update the task")
+            @RequestBody CreateTaskRequest request) {
+        Task updated = taskService.updateTask(id, request);
+        if (updated == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a task", description = "Deletes a task by ID")
+    public ResponseEntity<Void> deleteTask(
+            @Parameter(description = "Task ID")
+            @PathVariable Long id) {
+        if (!taskService.deleteTask(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
     }
 }

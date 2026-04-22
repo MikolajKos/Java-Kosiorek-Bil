@@ -3,7 +3,6 @@ package com.example.projectmanagerapp.controller;
 import com.example.projectmanagerapp.dto.CreateUserRequest;
 import com.example.projectmanagerapp.model.User;
 import com.example.projectmanagerapp.service.UserService;
-import com.example.projectmanagerapp.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,5 +38,30 @@ public class UserController {
         user.setUsername(request.username());
         User saved = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update an existing user", description = "Updates an existing user by ID")
+    public ResponseEntity<User> updateUser(
+            @Parameter(description = "User ID")
+            @PathVariable Long id,
+            @Parameter(description = "Data required to update the user")
+            @RequestBody CreateUserRequest request) {
+        User updated = userService.updateUser(id, request);
+        if (updated == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a user", description = "Deletes a user by ID")
+    public ResponseEntity<Void> deleteUser(
+            @Parameter(description = "User ID")
+            @PathVariable Long id) {
+        if (!userService.deleteUser(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
     }
 }

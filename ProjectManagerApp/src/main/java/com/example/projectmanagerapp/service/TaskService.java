@@ -41,4 +41,33 @@ public class TaskService {
 
         return taskRepository.save(task);
     }
+
+    public Task updateTask(Long id, CreateTaskRequest request) {
+        Task existing = taskRepository.findById(id).orElse(null);
+        if (existing == null) {
+            return null;
+        }
+
+        Project project = projectRepository.findById(request.projectId()).orElse(null);
+        User user = userRepository.findById(request.userId()).orElse(null);
+        if (project == null || user == null) {
+            return null;
+        }
+
+        existing.setTitle(request.title());
+        existing.setDescription(request.description());
+        existing.setTaskType(request.taskType());
+        existing.setProject(project);
+        existing.setUser(user);
+
+        return taskRepository.save(existing);
+    }
+
+    public boolean deleteTask(Long id) {
+        if (!taskRepository.existsById(id)) {
+            return false;
+        }
+        taskRepository.deleteById(id);
+        return true;
+    }
 }

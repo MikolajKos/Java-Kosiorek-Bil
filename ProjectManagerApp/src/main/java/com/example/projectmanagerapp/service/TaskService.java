@@ -8,6 +8,7 @@ import com.example.projectmanagerapp.repository.ProjectRepository;
 import com.example.projectmanagerapp.repository.TaskRepository;
 import com.example.projectmanagerapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -42,25 +43,28 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
+    // --- NOWE METODY ---
+
+    public Task getTaskById(Long id) {
+        return taskRepository.findById(id).orElse(null);
+    }
+
     public Task updateTask(Long id, CreateTaskRequest request) {
-        Task existing = taskRepository.findById(id).orElse(null);
-        if (existing == null) {
-            return null;
-        }
+        Task existingTask = taskRepository.findById(id).orElse(null);
+        if (existingTask == null) return null;
 
         Project project = projectRepository.findById(request.projectId()).orElse(null);
         User user = userRepository.findById(request.userId()).orElse(null);
-        if (project == null || user == null) {
-            return null;
-        }
 
-        existing.setTitle(request.title());
-        existing.setDescription(request.description());
-        existing.setTaskType(request.taskType());
-        existing.setProject(project);
-        existing.setUser(user);
+        if (project == null || user == null) return null;
 
-        return taskRepository.save(existing);
+        existingTask.setTitle(request.title());
+        existingTask.setDescription(request.description());
+        existingTask.setTaskType(request.taskType());
+        existingTask.setProject(project);
+        existingTask.setUser(user);
+
+        return taskRepository.save(existingTask);
     }
 
     public boolean deleteTask(Long id) {

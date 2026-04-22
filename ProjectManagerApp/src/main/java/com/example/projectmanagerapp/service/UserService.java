@@ -4,6 +4,7 @@ import com.example.projectmanagerapp.dto.CreateUserRequest;
 import com.example.projectmanagerapp.model.User;
 import com.example.projectmanagerapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -20,6 +21,12 @@ public class UserService {
 
     public User createUser(User user) {
         return userRepository.save(user);
+    }
+
+    // --- NOWE METODY ---
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     public User updateUser(Long id, CreateUserRequest request) {

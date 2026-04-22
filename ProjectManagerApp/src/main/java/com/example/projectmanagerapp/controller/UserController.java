@@ -2,6 +2,7 @@ package com.example.projectmanagerapp.controller;
 
 import com.example.projectmanagerapp.dto.CreateUserRequest;
 import com.example.projectmanagerapp.model.User;
+import com.example.projectmanagerapp.service.UserService;
 import com.example.projectmanagerapp.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,16 +18,16 @@ import java.util.List;
 @Tag(name = "Users", description = "Operations for managing users")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
     @Operation(summary = "Retrieve all users", description = "Returns a list of all users from the database")
     public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userRepository.findAll());
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @PostMapping
@@ -36,7 +37,7 @@ public class UserController {
             @RequestBody CreateUserRequest request) {
         User user = new User();
         user.setUsername(request.username());
-        User saved = userRepository.save(user);
+        User saved = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 }

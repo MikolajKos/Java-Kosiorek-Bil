@@ -2,10 +2,10 @@ package com.example.projectmanagerapp.controller;
 
 import com.example.projectmanagerapp.model.Project;
 import com.example.projectmanagerapp.service.ProjectService;
-import com.example.projectmanagerapp.repository.ProjectRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +17,6 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-    // Wstrzykujemy Serwis zamiast Repozytorium
     public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
     }
@@ -34,5 +33,30 @@ public class ProjectController {
             @Parameter(description = "Project object to be created")
             @RequestBody Project project) {
         return projectService.createProject(project);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update an existing project", description = "Updates an existing project by ID")
+    public ResponseEntity<Project> updateProject(
+            @Parameter(description = "Project ID")
+            @PathVariable Long id,
+            @Parameter(description = "Project fields to update")
+            @RequestBody Project project) {
+        Project updated = projectService.updateProject(id, project);
+        if (updated == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a project", description = "Deletes a project by ID")
+    public ResponseEntity<Void> deleteProject(
+            @Parameter(description = "Project ID")
+            @PathVariable Long id) {
+        if (!projectService.deleteProject(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
     }
 }

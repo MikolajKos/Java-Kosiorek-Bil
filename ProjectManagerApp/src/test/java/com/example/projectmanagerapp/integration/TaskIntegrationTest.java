@@ -28,6 +28,52 @@ class TaskIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @DisplayName("PUT /api/tasks/{id} returns 404 when updating with unknown project")
+    void updateTaskUnknownProject() throws Exception {
+        User user = persistUser("karl");
+        Project project = persistProject("Apollo");
+
+        Task task = new Task();
+        task.setTitle("Test task");
+        task.setTaskType(TaskType.FEATURE);
+        task.setProject(project);
+        task.setUser(user);
+        Long id = taskRepository.save(task).getId();
+
+        // Próba aktualizacji z nieistniejącym projectId (9999L)
+        CreateTaskRequest request = new CreateTaskRequest(
+                "Updated", "Desc", TaskType.BUG, 9999L, user.getId());
+
+        mockMvc.perform(put("/api/tasks/" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("PUT /api/tasks/{id} returns 404 when updating with unknown user")
+    void updateTaskUnknownUser() throws Exception {
+        User user = persistUser("lara");
+        Project project = persistProject("Gemini");
+
+        Task task = new Task();
+        task.setTitle("Test task 2");
+        task.setTaskType(TaskType.FEATURE);
+        task.setProject(project);
+        task.setUser(user);
+        Long id = taskRepository.save(task).getId();
+
+        // Próba aktualizacji z nieistniejącym userId (9999L)
+        CreateTaskRequest request = new CreateTaskRequest(
+                "Updated", "Desc", TaskType.BUG, project.getId(), 9999L);
+
+        mockMvc.perform(put("/api/tasks/" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     @DisplayName("POST /api/tasks creates a task linked to a project and user")
     void createTask() throws Exception {
         User user = persistUser("eve");

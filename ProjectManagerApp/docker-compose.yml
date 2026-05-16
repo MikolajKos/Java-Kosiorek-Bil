@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # Konfiguracja bazy danych PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: project_manager_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: task_manager
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Konfiguracja naszej aplikacji Spring Boot
+  app:
+    build: .
+    container_name: project_manager_app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/task_manager
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
